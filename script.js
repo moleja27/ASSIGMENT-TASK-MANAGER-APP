@@ -1,53 +1,65 @@
-// TASK MANAGER
-// // taskManager object
+// Task Manager Object
 const taskManager = {
     tasks: [],
-    addTaks: function (description) {
-        console.log('ADD TASK ******');
+
+    // Method to add a task
+    addTask: function (description) {
+        if (description.trim() !== '') {
+            const task = {
+                id: this.tasks.length + 1,
+                description: description,
+                completed: false
+            };
+            this.tasks.push(task);
+            alert(`Task added: ${description}`);
+        } else {
+            alert('Error: Task description cannot be empty.');
+        }
     },
-    completeTask: function (id) {
-        console.log('completeTask  ******');
+
+    // Method to mark a task as completed
+    completeTask: function (taskId) {
+        const task = this.tasks.find(task => task.id === taskId);
+        if (task) {
+            task.completed = true;
+            alert(`Task completed: ${task.description}`);
+        } else {
+            alert('Error: The specified task does not exist.');
+        }
     },
+
+    // Method to list all tasks
     listAllTasks: function () {
-        console.log('listAllTasks  ****');
+        let message = 'All tasks:\n';
+        this.tasks.forEach(task => {
+            message += `ID: ${task.id}, Description: ${task.description}, Completed: ${task.completed ? 'Yes' : 'No'}\n`;
+        });
+        alert(message);
     },
+
+    // Method to list completed tasks
     listCompletedTasks: function () {
-        console.log('listCompletedTasks *****');
+        const completedTasks = this.tasks.filter(task => task.completed);
+        let message = 'Completed tasks:\n';
+        completedTasks.forEach(task => {
+            message += `ID: ${task.id}, Description: ${task.description}\n`;
+        });
+        alert(message);
     }
-}
+};
 
-// function for asking the user to fill in their name
-function askUserName() {
-    const userName = prompt("write your name please");
-    if (userName && userName.trim() != "") {
-        alert(`Hello ${userName} welcome to the Gardengame`);
-        menu();
-    } else {
-        alert("please dont let empty before the name");
-        askUserName();
-    }
-}
-
-askUserName();
-
-// menu function
-function menu() {
-    const choice = parseInt(prompt(`you can choose and full it up the follow information \n
-      1) AddTask 
-      2) completeTask
-      3) ListAllTasks
-      4) listCompletedTasks
-      5) Exit..
-    `));
+// Menu function
+function menu(user) {
+    const choice = parseInt(prompt(`*** MENU ***\n\nWelcome, ${user}!\n\nPlease choose an option from the menu:\n1. Add a task\n2. Complete a task\n3. List all tasks\n4. List completed tasks\n5. Exit`));
 
     switch (choice) {
         case 1:
-            const tarea = prompt("please write the name of the work that you want to do?");
-            taskManager.addTaks(tarea);
+            const description = prompt('Enter the description of the new task:');
+            taskManager.addTask(description);
             break;
         case 2:
-            const complete = prompt("can you please add the ID of the assigment that you want to do");
-            taskManager.completeTask(complete);
+            const id = parseInt(prompt('Enter the ID of the task you want to mark as completed:'));
+            taskManager.completeTask(id);
             break;
         case 3:
             taskManager.listAllTasks();
@@ -56,15 +68,23 @@ function menu() {
             taskManager.listCompletedTasks();
             break;
         case 5:
-            return alert("Thank you for use the aplication Gardengame");
+            return alert('You have have fonished the application...');
         default:
-            alert("you need to select one of the options")
+            alert('Error: Invalid option. Please choose an option from the menu.');
     }
+    // Show the menu again after each operation, except when the user chooses to exit
     menu();
 }
 
-// unique identifier lie id
-//a description
-//a boolean for checking if it is complete or not
-// starts with the function asUserName() which triggers the menu() function
-
+// Function to ask for user name
+function askUserName() {
+    const userName = prompt('Please enter your name:');
+    if (userName && userName.trim() !== '') {
+        menu(userName); // Start the menu after entering the user name
+    } else {
+        alert('Error: Name cannot be empty.');
+        askUserName();
+    }
+}
+// Start the application by asking for the user's name
+askUserName();
